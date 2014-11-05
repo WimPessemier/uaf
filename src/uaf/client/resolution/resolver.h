@@ -82,12 +82,14 @@ namespace uafc
          * @param addresses         Addresses to resolve.
          * @param expandedNodeIds   Results of the resolution.
          * @param statuses          Statuses of the results of the resolution.
+         * @param sessionConfig     The SessionConfig to use for translating browse paths.
          * @return                  Good if the resolution went find, bad otherwise.
          */
         uaf::Status resolve(
                 const std::vector<uaf::Address>&    addresses,
                 std::vector<uaf::ExpandedNodeId>&   expandedNodeIds,
-                std::vector<uaf::Status>&           statuses);
+                std::vector<uaf::Status>&           statuses,
+                const uafc::SessionConfig&          sessionConfig);
 
 
         /**
@@ -140,7 +142,7 @@ namespace uafc
             std::vector<uaf::ExpandedNodeId> itemExpandedNodeIds;
             std::vector<uaf::Status>         itemStatuses;
             if (ret.isGood())
-                ret = resolve(items, itemExpandedNodeIds, itemStatuses);
+                ret = resolve(items, itemExpandedNodeIds, itemStatuses, request.sessionConfig);
 
             // update all 'set' targets
             if (ret.isGood())
@@ -228,6 +230,7 @@ namespace uafc
          * @param statuses          Output parameter: the resulting statuses (this vector will
          *                          be resized to the same size as the 'relativePathAddresses'
          *                          parameter.
+         * @param sessionConfig     The SessionConfig to use for translating browse paths.
          * @return                  Good if there were no errors on the client side (e.g. malformed
          *                          addresses), Bad otherwise.
          */
@@ -235,16 +238,18 @@ namespace uafc
                 const std::vector<uaf::Address>&    relativePathAddresses,
                 uaf::Mask&                          mask,
                 std::vector<uaf::BrowsePath>&       results,
-                std::vector<uaf::Status>&           statuses);
+                std::vector<uaf::Status>&           statuses,
+                const uafc::SessionConfig&          sessionConfig);
 
 
         /**
          * Resolve relative paths.
          *
-         * @param addresses The addresses of which the mask indicates the relative paths.
-         * @param mask      The mask that indicates which addresses are relative paths.
-         * @param results   In-out parameter: the resulting ExpandedNodeIds.
-         * @param statuses  In-out parameter: the resulting statuses.
+         * @param addresses     The addresses of which the mask indicates the relative paths.
+         * @param mask          The mask that indicates which addresses are relative paths.
+         * @param results       In-out parameter: the resulting ExpandedNodeIds.
+         * @param statuses      In-out parameter: the resulting statuses.
+         * @param sessionConfig The SessionConfig to use for translating browse paths.
          * @return          Good if there were no errors on the client side (e.g. malformed
          *                  addresses), Bad otherwise.
          */
@@ -252,17 +257,19 @@ namespace uafc
                 const std::vector<uaf::Address>&    addresses,
                 const uaf::Mask&                    mask,
                 std::vector<uaf::ExpandedNodeId>&   results,
-                std::vector<uaf::Status>&           statuses);
+                std::vector<uaf::Status>&           statuses,
+                const uafc::SessionConfig&          sessionConfig);
 
 
         /**
          * Resolve BrowsePaths.
          *
-         * @param browsePaths   The browse paths of which those indicated by the mask, will
-         *                      be resolved.
-         * @param mask          The mask that indicates the browse paths that will be resolved.
-         * @param results       The resulting ExpandedNodeIds.
-         * @param statuses      The resulting resolution statuses.
+         * @param browsePaths       The browse paths of which those indicated by the mask, will
+         *                          be resolved.
+         * @param mask              The mask that indicates the browse paths that will be resolved.
+         * @param results           The resulting ExpandedNodeIds.
+         * @param statuses          The resulting resolution statuses.
+         * @param sessionConfig     The SessionConfig to use for translating browse paths.
          * @return              Good if there were no errors on the client side (e.g. malformed
          *                      addresses), Bad otherwise.
          */
@@ -270,7 +277,8 @@ namespace uafc
                 std::vector<uaf::BrowsePath>&       browsePaths,
                 uaf::Mask&                          mask,
                 std::vector<uaf::ExpandedNodeId>&   results,
-                std::vector<uaf::Status>&           statuses);
+                std::vector<uaf::Status>&           statuses,
+                const uafc::SessionConfig&          sessionConfig);
 
 
         /**

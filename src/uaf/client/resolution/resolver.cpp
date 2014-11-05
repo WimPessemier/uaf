@@ -116,7 +116,8 @@ namespace uafc
     Status Resolver::resolve(
             const vector<Address>&  addresses,
             vector<ExpandedNodeId>& expandedNodeIds,
-            vector<Status>&         statuses)
+            vector<Status>&         statuses,
+            const SessionConfig&    sessionConfig)
     {
         // ToDo add session and security settings!
 
@@ -165,7 +166,8 @@ namespace uafc
                 ret = resolveRelativePaths(addresses,
                                            relativePathMask,
                                            expandedNodeIds,
-                                           statuses);
+                                           statuses,
+                                           sessionConfig);
         }
 
         return ret;
@@ -226,7 +228,8 @@ namespace uafc
             const vector<Address>&  addresses,
             const Mask&             mask,
             vector<ExpandedNodeId>& results,
-            vector<Status>&         statuses)
+            vector<Status>&         statuses,
+            const SessionConfig&    sessionConfig)
     {
         // declare the return status
         Status ret;
@@ -243,12 +246,13 @@ namespace uafc
                 addresses,
                 remainingMask,
                 browsePaths,
-                statuses);
+                statuses,
+                sessionConfig);
 
         // now try to resolve the relative paths (essentially browse paths since their starting
         // addresses have been resolved)
         if (ret.isGood())
-            ret = resolveBrowsePaths(browsePaths, remainingMask, results, statuses);
+            ret = resolveBrowsePaths(browsePaths, remainingMask, results, statuses, sessionConfig);
 
         // add the resolved addresses to the cache
         for (size_t i = 0; i < addresses.size() && ret.isGood(); i++)
@@ -269,7 +273,8 @@ namespace uafc
             const vector<Address>&  relativePathAddresses,
             Mask&                   mask,
             vector<BrowsePath>&     results,
-            vector<Status>&         statuses)
+            vector<Status>&         statuses,
+            const SessionConfig&    sessionConfig)
     {
         // declare the return status
         Status ret(statuscodes::Good);
@@ -292,7 +297,11 @@ namespace uafc
         // resolve them (recursively!)
         vector<ExpandedNodeId>  startingAddressesResults;
         vector<Status>          startingAddressesStatuses;
-        ret = resolve(startingAddresses, startingAddressesResults, startingAddressesStatuses);
+        ret = resolve(
+                startingAddresses,
+                startingAddressesResults,
+                startingAddressesStatuses,
+                sessionConfig);
 
         // update the results
         for (size_t i = 0, j = 0; i < noOfRelativePaths && ret.isGood(); i++)
@@ -326,7 +335,8 @@ namespace uafc
             vector<BrowsePath>&       browsePaths,
             Mask&                     mask,
             vector<ExpandedNodeId>&   results,
-            vector<Status>&           statuses)
+            vector<Status>&           statuses,
+            const SessionConfig&      sessionConfig)
     {
         logger_->debug("Resolving %d browse paths", browsePaths.size());
 
@@ -354,6 +364,8 @@ namespace uafc
             // create a request and a result
             TranslateBrowsePathsToNodeIdsRequest request;
             TranslateBrowsePathsToNodeIdsResult  result;
+
+            request.sessionConfig = sessionConfig;
 
             for (size_t i = 0; i < noOfBrowsePaths; i++)
             {
@@ -384,7 +396,7 @@ namespace uafc
 
                 // check if we need to perform another (recursive!) translation
                 if (mask.setCount() > 0)
-                    ret = resolveBrowsePaths(browsePaths, mask, results, statuses);
+                    ret = resolveBrowsePaths(browsePaths, mask, results, statuses, sessionConfig);
             }
         }
 
