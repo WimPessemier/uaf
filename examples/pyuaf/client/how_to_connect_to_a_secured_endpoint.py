@@ -4,7 +4,7 @@ from pyuaf.client.settings  import ClientSettings, SessionSettings, SessionSecur
 from pyuaf.util             import Address, NodeId
 from pyuaf.util             import PkiRsaKeyPair, PkiIdentity, PkiCertificateInfo, PkiCertificate
 from pyuaf.util.errors      import UafError, ConnectionError
-from pyuaf.util             import securitypolicies, messagesecuritymodes
+from pyuaf.util             import securitypolicies, messagesecuritymodes, usertokentypes
 import socket
 import shutil
 import os
@@ -48,7 +48,17 @@ Here's how the UAF Client handles certificates:
    All of this is handled by the UAF and SDK behind the scenes, so you don't have to 
    take care of it yourself. Basically you only have to configure the client
    settings and session settings. 
-   
+
+NOTE: If you modify this example to test more security settings, you may have to change the 
+configuration of the 'uaservercpp' demo server:
+ - open 'ServerConfig.xml' (in the same directory as the 'uaservercpp' executable)
+ - change the 'AutomaticallyTrustAllClientCertificates' entry to 'true'
+
+NOTE: If you're experimenting with user authentication, here are three valid (hard-coded) users
+that will be accepted by the 'uaservercpp' demo server:
+ 1) Username and password: Admin Admin
+ 2) Username and password: Operator Operator
+ 3) Username and password: John John
 """
 print(description)
 
@@ -185,11 +195,15 @@ print("")
 
 # WARNING: THIS API MAY CHANGE WHEN UAF v2.0.0 WILL BE RELEASED !!!
 
-# suppose we want Basic128Rsa15 encryption + signed communication:
+# suppose we want Basic128Rsa15 encryption + signed communication, 
+# and instead of anonymous login we login as Admin/Admin 
+# (this is one of the accepted users by the uaservercpp):
 sessionSettings = SessionSettings()
 sessionSettings.securitySettingsList[0].securityPolicy      = securitypolicies.UA_Basic128Rsa15
-sessionSettings.securitySettingsList[0].messageSecurityMode = messagesecuritymodes.Mode_Sign
-
+sessionSettings.securitySettingsList[0].messageSecurityMode = messagesecuritymodes.Mode_SignAndEncrypt
+sessionSettings.securitySettingsList[0].userTokenType       = usertokentypes.UserName
+sessionSettings.securitySettingsList[0].userName            = "Admin"
+sessionSettings.securitySettingsList[0].userPassword        = "Admin"
 
 print("")
 print("===========================================================================================")
