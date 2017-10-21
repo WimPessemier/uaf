@@ -428,8 +428,8 @@ namespace uaf
 
                 notification.clientHandle       = clientHandle;
                 notification.data               = dataNotifications[i].Value.Value;
-                notification.serverTimestamp    = dataNotifications[i].Value.ServerTimestamp;
-                notification.sourceTimestamp    = dataNotifications[i].Value.SourceTimestamp;
+                notification.serverTimestamp.fromSdk(UaDateTime(dataNotifications[i].Value.ServerTimestamp));
+                notification.sourceTimestamp.fromSdk(UaDateTime(dataNotifications[i].Value.SourceTimestamp));
 
                 if (OpcUa_IsGood(dataNotifications[i].Value.StatusCode))
                     notification.status = statuscodes::Good;
