@@ -65,6 +65,10 @@ namespace uaf
         /** The new data value. */
         uaf::Variant data;
 
+        /** The timestamps */
+        uaf::DateTime sourceTimestamp;
+        uaf::DateTime serverTimestamp;
+
 
         /**
          * Get a string representation of the data notification.

@@ -54,9 +54,15 @@ namespace uaf
         ss << indent << " - status";
         ss << fillToPos(ss, colon);
         ss << ": " << status.toString() << "\n";
+        ss << ": " << data.toString();
+        ss << indent << " - serverTimestamp";
+        ss << fillToPos(ss, colon);
+        ss << ": " << serverTimestamp.toString() << "\n";
+        ss << indent << " - sourceTimestamp";
+        ss << fillToPos(ss, colon);
+        ss << ": " << sourceTimestamp.toString() << "\n";
         ss << indent << " - data";
         ss << fillToPos(ss, colon);
-        ss << ": " << data.toString();
         return ss.str();
     }
 
@@ -67,7 +73,9 @@ namespace uaf
     {
         return    object1.clientHandle == object2.clientHandle
                && object1.status == object2.status
-               && object1.data == object2.data;
+               && object1.data == object2.data
+               && object1.sourceTimestamp == object2.sourceTimestamp
+               && object1.serverTimestamp == object2.serverTimestamp;
     }
 
 
@@ -87,6 +95,10 @@ namespace uaf
             return object1.clientHandle < object2.clientHandle;
         else if (object1.status != object2.status)
             return object1.status < object2.status;
+        else if (object1.sourceTimestamp != object2.sourceTimestamp)
+            return object1.sourceTimestamp < object2.sourceTimestamp;
+        else if (object1.serverTimestamp != object2.serverTimestamp)
+            return object1.serverTimestamp < object2.serverTimestamp;
         else
             return object1.data < object2.data;
     }
