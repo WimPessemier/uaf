@@ -54,7 +54,6 @@ namespace uaf
         ss << indent << " - status";
         ss << fillToPos(ss, colon);
         ss << ": " << status.toString() << "\n";
-        ss << ": " << data.toString();
         ss << indent << " - serverTimestamp";
         ss << fillToPos(ss, colon);
         ss << ": " << serverTimestamp.toString() << "\n";
@@ -63,6 +62,7 @@ namespace uaf
         ss << ": " << sourceTimestamp.toString() << "\n";
         ss << indent << " - data";
         ss << fillToPos(ss, colon);
+        ss << ": " << data.toString();
         return ss.str();
     }
 
